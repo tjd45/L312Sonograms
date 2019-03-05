@@ -27,7 +27,7 @@ class wholePiano extends JPanel implements KeyListener {
         resetPianoColours();
         addKeyListener(this);
         initialiseNoteCoords();
-        initialiseNoteColours();
+        initialiseNoteColours("G");
         noteToNumber("C7");
     }
     
@@ -113,32 +113,41 @@ class wholePiano extends JPanel implements KeyListener {
     	
     }
     
-    public void initialiseNoteColours(){
-    	Color colour = new Color(54,253,50);
-    	noteColours.put("C", colour);
-    	colour = new Color(99,254,90);
-    	noteColours.put("G", colour);
-    	colour = new Color(111,252,111);
-    	noteColours.put("E", colour);
-    	colour = new Color(186,252,80);
-    	noteColours.put("B", colour);
-    	colour = new Color(232,252,67);
-    	noteColours.put("A", colour);
-    	colour = new Color(246,233,67);
-    	noteColours.put("D", colour);
-    	colour = new Color(247,196,89);
-    	noteColours.put("F", colour);
-    	colour = new Color(245,165,50);
-    	noteColours.put("Bb", colour);
-    	colour = new Color(243,121,60);
-    	noteColours.put("Eb", colour);
-    	colour = new Color(242,84,39);
-    	noteColours.put("G#", colour);
-    	colour = new Color(242,58,34);
-    	noteColours.put("C#", colour);
-    	colour = new Color(239,14,29);
-    	noteColours.put("F#", colour);
+    public void initialiseNoteColours(String key){
     	
+    	int index = -1;
+    	for (int i=0;i<octave.length;i++) {
+    		if (octave[i].equals(key)) {
+    			index = i;
+    			break;
+    		}
+    	}
+    			
+    	Color colour = new Color(54,253,50);
+    	noteColours.put(octave[index], colour);
+    	colour = new Color(99,254,90);
+    	noteColours.put(octave[(index+7)%12], colour);
+    	colour = new Color(111,252,111);
+    	noteColours.put(octave[(index+4)%12], colour);
+    	colour = new Color(186,252,80);
+    	noteColours.put(octave[(index+11)%12], colour);
+    	colour = new Color(232,252,67);
+    	noteColours.put(octave[(index+9)%12], colour);
+    	colour = new Color(246,233,67);
+    	noteColours.put(octave[(index+2)%12], colour);
+    	colour = new Color(247,196,89);
+    	noteColours.put(octave[(index+5)%12], colour);
+    	colour = new Color(245,165,50);
+    	noteColours.put(octave[(index+10)%12], colour);
+    	colour = new Color(243,121,60);
+    	noteColours.put(octave[(index+3)%12], colour);
+    	colour = new Color(242,84,39);
+    	noteColours.put(octave[(index+8)%12], colour);
+    	colour = new Color(242,58,34);
+    	noteColours.put(octave[(index+1)%12], colour);
+    	colour = new Color(239,14,29);
+    	noteColours.put(octave[(index+6)%12], colour);
+
     }
     
     public void resetPianoColours(){
