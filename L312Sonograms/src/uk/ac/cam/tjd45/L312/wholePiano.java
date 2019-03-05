@@ -17,10 +17,12 @@ class wholePiano extends JPanel implements KeyListener {
     private int height = 640/8;
     private Color[][] pianoColours = new Color[11][8];
     private ArrayList<String> pressedNotes = new ArrayList<String>();
+    private ArrayList<String> sustainedNotes = new ArrayList<String>();
     private HashMap<String,MyPair> notesToCoord = new HashMap<String,MyPair>();
     private HashMap<String,Integer> noteOrder = new HashMap<String,Integer>();
     private HashMap<String,Color> noteColours = new HashMap<String,Color>();
     private String[] octave = {"C","C#","D","Eb","E","F","F#","G","G#","A","Bb","B"};
+    private boolean sustain = false;
     
     public wholePiano() {  //Constructor
         this.setPreferredSize(new Dimension(880, 640));
@@ -113,6 +115,20 @@ class wholePiano extends JPanel implements KeyListener {
     	
     }
     
+    public void setSustain(byte a, byte b) {
+    	if(a==64) {
+    		if(b==127) {
+    			System.out.println("Sustain On");
+    			sustain=true;
+    		}else {
+    			System.out.println("Sustain Off");
+    			sustain=false;
+    			sustainedNotes.clear();
+    			repaint();
+    		}
+    	}
+    }
+    
     public void initialiseNoteColours(String key){
     	
     	int index = -1;
@@ -172,6 +188,13 @@ class wholePiano extends JPanel implements KeyListener {
     		System.out.println(curInstance);
     		System.out.println(x+","+y);
       	}
+    	for (String curInstance: sustainedNotes) {
+    		x = notesToCoord.get(curInstance).key();
+    		y = notesToCoord.get(curInstance).value();
+    		pianoColours[x][y]=noteColours.get(curInstance.substring(0,curInstance.length()-1));
+    		System.out.println(curInstance);
+    		System.out.println(x+","+y);
+      	}
     }
     
     public void addNotify() { //the focus
@@ -185,7 +208,12 @@ class wholePiano extends JPanel implements KeyListener {
     }
     
     public void noteReleased(String noteName){
-    	pressedNotes.remove(noteName);
+    	if(!sustain) {
+    		pressedNotes.remove(noteName);
+    	}else {
+    		pressedNotes.remove(noteName);
+    		sustainedNotes.add(noteName);
+    	}
     	repaint();
     }
     public void paintComponent(Graphics g) {
