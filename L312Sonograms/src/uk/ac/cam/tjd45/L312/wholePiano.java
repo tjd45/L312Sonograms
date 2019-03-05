@@ -16,11 +16,13 @@ class wholePiano extends JPanel implements KeyListener {
     private int width = 880/11;
     private int height = 640/8;
     private Color[][] pianoColours = new Color[11][8];
+    private int[][] pianoVolumes = new int[11][8];
     private ArrayList<String> pressedNotes = new ArrayList<String>();
     private ArrayList<String> sustainedNotes = new ArrayList<String>();
     private HashMap<String,MyPair> notesToCoord = new HashMap<String,MyPair>();
     private HashMap<String,Integer> noteOrder = new HashMap<String,Integer>();
     private HashMap<String,Color> noteColours = new HashMap<String,Color>();
+    private HashMap<String,Integer> noteVolume = new HashMap<String,Integer>();
     private String[] octave = {"C","C#","D","Eb","E","F","F#","G","G#","A","Bb","B"};
     private boolean sustain = false;
     
@@ -128,6 +130,14 @@ class wholePiano extends JPanel implements KeyListener {
         }
     }
     
+    public void resetPianoVolumes(){
+    	for(int i = 0; i<pianoVolumes.length; i++){
+        	for(int j = 0; j<pianoVolumes[i].length; j++){
+        		pianoVolumes[i][j]=0 ;
+        	}
+        }
+    }
+    
     public void resetNoteColour(int x, int y){
     	pianoColours[x][y]=new Color(255,255,255);
     }
@@ -151,19 +161,31 @@ class wholePiano extends JPanel implements KeyListener {
       	}
     }
     
+    public void setPianoVolumes(){
+    	resetPianoVolumes();
+    	int x,y;
+    	for (Map.Entry<String, Integer> entry : noteVolume.entrySet()) {
+    		x = notesToCoord.get(entry.getKey()).key();
+    		y = notesToCoord.get(entry.getKey()).value();
+    		pianoVolumes[x][y]=entry.getValue();
+		}
+    }
+    
     public void addNotify() { //the focus
         super.addNotify();
         requestFocus();
     }
 
-    public void notePressed(String noteName){
+    public void notePressed(String noteName, int vel){
     	pressedNotes.add(noteName);
+    	noteVolume.put(noteName, vel);
     	repaint();
     }
     
     public void noteReleased(String noteName){
     	if(!sustain) {
     		pressedNotes.remove(noteName);
+    		noteVolume.remove(noteName);
     	}else {
     		pressedNotes.remove(noteName);
     		sustainedNotes.add(noteName);
@@ -173,6 +195,7 @@ class wholePiano extends JPanel implements KeyListener {
     public void paintComponent(Graphics g) {
         g.clearRect(0, 0, getWidth(), getHeight()); //clear before next press
         setPianoColours();
+        setPianoVolumes();
         int x = 0;
         int y = 0;
         
@@ -181,10 +204,13 @@ class wholePiano extends JPanel implements KeyListener {
         	for(int j = 0; j<8; j++){
         		Color color = new Color(0,0,0);
         		
-        		
         		g.setColor(pianoColours[i][j]);
-        		g.fillRect(x,y+(height/4),width,(height/2));
+        		int volume = pianoVolumes[i][j];
+        		float ratio = (float) Math.min((float)volume/(float)100,1.0);
+        		int newHeight = Math.round(height*ratio);
+        		g.fillRect(x,y,width,newHeight);
         		g.setColor(color);
+        		
         		g.drawRect(x,y,x+width,height);
         		y+=height;
         	}
