@@ -56,63 +56,17 @@ class wholePiano extends JPanel implements KeyListener {
     	
     	for(int i = 0; i< 8; i++){
     		for(int j = 0; j<octave.length; j++){
-    			int loc = Math.min(noteToNumber(octave[j]+i),87);
+    			int loc = Math.min(noteToNumber(octave[j]+i),98);
     			int x = loc%11;
-    			int y = loc/11;
+    			int y = 8-loc/11;
     			MyPair coords = new MyPair(x,y);
     			notesToCoord.put(octave[j]+i, coords);
+    			System.out.println(octave[j]+i+","+x+","+y+","+loc);
     		}
     	}
     	
-//    	Integer[] entry = new Integer[2];
-//    	entry[0]=6;
-//    	entry[1]=3;
-//    	notesToCoord.put("C", entry);
-//    	Integer[] entry2 = new Integer[2];
-//    	entry2[0]=7;
-//    	entry2[1]=3;
-//    	notesToCoord.put("C#", entry2);
-//    	Integer[] entry3 = new Integer[2];
-//    	entry3[0]=8;
-//    	entry3[1]=3;
-//    	notesToCoord.put("D", entry3);
-//    	Integer[] entry4 = new Integer[2];
-//    	entry4[0]=9;
-//    	entry4[1]=3;
-//    	notesToCoord.put("Eb", entry4);
-//    	Integer[] entry5 = new Integer[2];
-//    	entry5[0]=10;
-//    	entry5[1]=3;
-//    	notesToCoord.put("E", entry5);
-//    	Integer[] entry6 = new Integer[2];
-//    	entry6[0]=0;
-//    	entry6[1]=4;
-//    	notesToCoord.put("F", entry6);
-//    	Integer[] entry7 = new Integer[2];
-//    	entry7[0]=1;
-//    	entry7[1]=4;
-//    	notesToCoord.put("F#", entry7);
-//    	Integer[] entry8 = new Integer[2];
-//    	entry8[0]=2;
-//    	entry8[1]=4;
-//    	notesToCoord.put("G", entry8);
-//    	Integer[] entry9 = new Integer[2];
-//    	entry9[0]=3;
-//    	entry9[1]=4;
-//    	notesToCoord.put("G#", entry9);
-//    	Integer[] entry10 = new Integer[2];
-//    	entry10[0]=3;
-//    	entry10[1]=3;
-//    	notesToCoord.put("A", entry10);
-//    	Integer[] entry11 = new Integer[2];
-//    	entry11[0]=4;
-//    	entry11[1]=3;
-//    	notesToCoord.put("Bb", entry11);
-//    	Integer[] entry12 = new Integer[2];
-//    	entry12[0]=5;
-//    	entry12[1]=3;
-//    	notesToCoord.put("B", entry12);
     	
+    	System.out.println(notesToCoord.get("C0").key()+","+notesToCoord.get("C0").value());
     }
     
     public void setSustain(byte a, byte b) {
@@ -182,11 +136,11 @@ class wholePiano extends JPanel implements KeyListener {
     	resetPianoColours();
     	int x,y;
     	for (String curInstance: pressedNotes) {
+    
     		x = notesToCoord.get(curInstance).key();
     		y = notesToCoord.get(curInstance).value();
     		pianoColours[x][y]=noteColours.get(curInstance.substring(0,curInstance.length()-1));
-    		System.out.println(curInstance);
-    		System.out.println(x+","+y);
+    
       	}
     	for (String curInstance: sustainedNotes) {
     		x = notesToCoord.get(curInstance).key();
@@ -225,8 +179,13 @@ class wholePiano extends JPanel implements KeyListener {
         for(int i=0; i<11; i++){
         	y=0;
         	for(int j = 0; j<8; j++){
+        		Color color = new Color(0,0,0);
+        		
+        		
         		g.setColor(pianoColours[i][j]);
-        		g.fillRect(x,y,x+width,y+height);
+        		g.fillRect(x,y+(height/4),width,(height/2));
+        		g.setColor(color);
+        		g.drawRect(x,y,x+width,height);
         		y+=height;
         	}
         	x+=width;

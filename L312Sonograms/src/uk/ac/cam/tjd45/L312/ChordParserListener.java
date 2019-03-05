@@ -24,6 +24,7 @@ public class ChordParserListener extends ParserListenerAdapter {
         notes.add(note);
         wp.notePressed(note.toStringWithoutDuration());
         System.out.println(note.toStringWithoutDuration());
+        System.out.println(note.getVelocityString());
     }
 
     @Override public void onNoteReleased(Note note) {
