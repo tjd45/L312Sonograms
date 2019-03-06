@@ -208,7 +208,7 @@ class wholePiano extends JPanel implements KeyListener {
         		int volume = pianoVolumes[i][j];
         		float ratio = (float) Math.min((float)volume/(float)100,1.0);
         		int newHeight = Math.round(height*ratio);
-        		g.fillRect(x,y,width,newHeight);
+        		g.fillRect(x,y+((height-newHeight)/2),width,newHeight);
         		g.setColor(color);
         		
         		g.drawRect(x,y,x+width,height);
