@@ -25,9 +25,16 @@ public class ChordParserListener extends ParserListenerAdapter {
         wp.notePressed(note.toStringWithoutDuration());
         System.out.println(note.toStringWithoutDuration());
     }
+
     @Override public void onNoteReleased(Note note) {
     	//System.out.println(note.toString());
     	wp.noteReleased(note.toString());
+        // Remove the note from the list, might not be as easy as notes.remove(note)
+    }
+    
+    @Override public void onControllerEventParsed(byte a, byte b) {
+    	//System.out.println(note.toString());
+    	wp.setSustain(a, b);
         // Remove the note from the list, might not be as easy as notes.remove(note)
     }
 }
