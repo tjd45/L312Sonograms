@@ -9,8 +9,9 @@ import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
-class wholePiano extends JPanel implements KeyListener {
+class wholePiano extends JPanel implements KeyListener, ActionListener {
     private char f = 'a';
     private int a = 0, b = 0, c = 0;
     private int width = 880/11;
@@ -19,12 +20,14 @@ class wholePiano extends JPanel implements KeyListener {
     private int[][] pianoVolumes = new int[11][8];
     private ArrayList<String> pressedNotes = new ArrayList<String>();
     private ArrayList<String> sustainedNotes = new ArrayList<String>();
+    private ArrayList<MyPair> hitNotes = new ArrayList<MyPair>();
     private HashMap<String,MyPair> notesToCoord = new HashMap<String,MyPair>();
     private HashMap<String,Integer> noteOrder = new HashMap<String,Integer>();
     private HashMap<String,Color> noteColours = new HashMap<String,Color>();
     private HashMap<String,Integer> noteVolume = new HashMap<String,Integer>();
     private String[] octave = {"C","C#","D","Eb","E","F","F#","G","G#","A","Bb","B"};
     private boolean sustain = false;
+    private final Timer timer = new Timer(1000,  this);
     
     public wholePiano() {  //Constructor
         this.setPreferredSize(new Dimension(880, 640));
@@ -33,6 +36,15 @@ class wholePiano extends JPanel implements KeyListener {
         initialiseNoteCoords();
         initialiseNoteColours("G");
         noteToNumber("C7");
+        timer.start();
+    }
+    
+    
+    
+    @Override
+    public void actionPerformed(ActionEvent e) {
+    	System.out.println("Yes");
+        repaint();
     }
     
     public int noteToNumber(String wholeNote){
@@ -144,13 +156,16 @@ class wholePiano extends JPanel implements KeyListener {
     
     public void setPianoColours(){
     	resetPianoColours();
+    	hitNotes.clear();
     	int x,y;
     	for (String curInstance: pressedNotes) {
     
     		x = notesToCoord.get(curInstance).key();
     		y = notesToCoord.get(curInstance).value();
     		pianoColours[x][y]=noteColours.get(curInstance.substring(0,curInstance.length()-1));
-    
+    		
+    		MyPair hit = new MyPair(x,y);
+    		hitNotes.add(hit);
       	}
     	for (String curInstance: sustainedNotes) {
     		x = notesToCoord.get(curInstance).key();
@@ -215,6 +230,11 @@ class wholePiano extends JPanel implements KeyListener {
         		y+=height;
         	}
         	x+=width;
+        }
+        g.setColor(Color.black);
+        for(MyPair hit : hitNotes){
+        	g.drawLine(hit.key()*width, hit.value()*height+(height/2), (hit.key()*width)+width, hit.value()*height+(height/2));
+        	
         }
         
     }
