@@ -212,18 +212,18 @@ class wholePiano extends JPanel implements KeyListener {
         f = e.getKeyChar(); //modify value of f
         switch (f){
         case 'a': 
-        	if(pressedNotes.contains("A")){
-        		pressedNotes.remove("A");
+        	if(pressedNotes.contains("A5")){
+        		pressedNotes.remove("A5");
         	}else{
-        		pressedNotes.add("A");
+        		pressedNotes.add("A5");
         	}
         	
             break;
         case 'b': 
-        	if(pressedNotes.contains("B")){
-        		pressedNotes.remove("B");
+        	if(pressedNotes.contains("B5")){
+        		pressedNotes.remove("B5");
         	}else{
-        		pressedNotes.add("B");
+        		pressedNotes.add("B5");
         	}
         	
             break;
@@ -236,74 +236,74 @@ class wholePiano extends JPanel implements KeyListener {
         	
             break;
         case 'e': 
-        	if(pressedNotes.contains("E")){
-        		pressedNotes.remove("E");
+        	if(pressedNotes.contains("E5")){
+        		pressedNotes.remove("E5");
         	}else{
-        		pressedNotes.add("E");
+        		pressedNotes.add("E5");
         	}
         	
             break;
         case 'g': 
-        	if(pressedNotes.contains("G")){
-        		pressedNotes.remove("G");
+        	if(pressedNotes.contains("G5")){
+        		pressedNotes.remove("G5");
         	}else{
-        		pressedNotes.add("G");
+        		pressedNotes.add("G5");
         	}
         	
             break;
         case 'd': 
-        	if(pressedNotes.contains("D")){
-        		pressedNotes.remove("D");
+        	if(pressedNotes.contains("D5")){
+        		pressedNotes.remove("D5");
         	}else{
-        		pressedNotes.add("D");
+        		pressedNotes.add("D5");
         	}
         	
             break;
         case 'f': 
-        	if(pressedNotes.contains("F")){
-        		pressedNotes.remove("F");
+        	if(pressedNotes.contains("F5")){
+        		pressedNotes.remove("F5");
         	}else{
-        		pressedNotes.add("F");
+        		pressedNotes.add("F5");
         	}
         	
             break;
         case 'F': 
-        	if(pressedNotes.contains("F#")){
-        		pressedNotes.remove("F#");
+        	if(pressedNotes.contains("F#5")){
+        		pressedNotes.remove("F#5");
         	}else{
-        		pressedNotes.add("F#");
+        		pressedNotes.add("F#5");
         	}
         	
             break;
         case 'C': 
-        	if(pressedNotes.contains("C#")){
-        		pressedNotes.remove("C#");
+        	if(pressedNotes.contains("C#5")){
+        		pressedNotes.remove("C#5");
         	}else{
-        		pressedNotes.add("C#");
+        		pressedNotes.add("C#5");
         	}
         	
             break;
         case 'G': 
-        	if(pressedNotes.contains("G#")){
-        		pressedNotes.remove("G#");
+        	if(pressedNotes.contains("G#5")){
+        		pressedNotes.remove("G#5");
         	}else{
-        		pressedNotes.add("G#");
+        		pressedNotes.add("G#5");
         	}
         	
             break;
         case 'A': 
-        	if(pressedNotes.contains("Bb")){
-        		pressedNotes.remove("Bb");
+        	if(pressedNotes.contains("Bb5")){
+        		pressedNotes.remove("Bb5");
         	}else{
-        		pressedNotes.add("Bb");
+        		pressedNotes.add("Bb5");
         	}
         	
             break;
         case 'D': 
-        	if(pressedNotes.contains("Eb")){
+        	if(pressedNotes.contains("Eb5")){
         		pressedNotes.remove("Eb");
         	}else{
-        		pressedNotes.add("Eb");
+        		pressedNotes.add("Eb5");
         	}
         	
             break;

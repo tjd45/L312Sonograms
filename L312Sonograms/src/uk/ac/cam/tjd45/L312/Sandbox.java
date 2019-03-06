@@ -21,8 +21,8 @@ public class Sandbox {
 	System.out.println();
 	MidiDevice device;
 	try {
-		System.out.println(devices[3]);
-		device = MidiSystem.getMidiDevice(devices[3]);
+		System.out.println(devices[1]);
+		device = MidiSystem.getMidiDevice(devices[1]);
 	
 
 	
