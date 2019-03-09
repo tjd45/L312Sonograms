@@ -15,8 +15,8 @@ class wholePiano extends JPanel implements KeyListener, ActionListener {
 	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 	double actualWidth = screenSize.getWidth();
 	double actualHeight = screenSize.getHeight();
-	private int screenHeight = 100;//(int) actualHeight - 70;
-	private int screenWidth = 100;//(int) actualWidth - 100;
+	private int screenHeight = (int) actualHeight;
+	private int screenWidth = (int) actualWidth;
     private char f = 'a';
     private int a = 0, b = 0, c = 0;
     private int width = screenWidth/11;
@@ -24,18 +24,21 @@ class wholePiano extends JPanel implements KeyListener, ActionListener {
     private Color[][] pianoColours = new Color[11][8];
     private int[][] pianoVolumes = new int[11][8];
     private ArrayList<String> pressedNotes = new ArrayList<String>();
+    private ArrayList<String> notesToRemove = new ArrayList<String>();
+    private ArrayList<String> sustainedToRemove = new ArrayList<String>();
     private ArrayList<String> sustainedNotes = new ArrayList<String>();
     private ArrayList<MyPair> hitNotes = new ArrayList<MyPair>();
     private HashMap<String,MyPair> notesToCoord = new HashMap<String,MyPair>();
     private HashMap<String,Integer> noteOrder = new HashMap<String,Integer>();
     private HashMap<String,Color> noteColours = new HashMap<String,Color>();
     private HashMap<String,Integer> noteVolume = new HashMap<String,Integer>();
-    private HashMap<String,Long> noteOnset = new HashMap<String,Long>();
     private String[] octave = {"C","C#","D","Eb","E","F","F#","G","G#","A","Bb","B"};
     private boolean sustain = false;
-    private int refreshRate = 1000;
+    private int refreshRate = 40;
     private final Timer timer = new Timer(refreshRate,  this);
-    private float fadeGradient = 100/10000000000L;
+    private float fadeGradient = (float)100/(float)10000;
+    private int counter = 0;
+    Color backgroundColour = new Color(20,35,60);
     
     public wholePiano() {  //Constructor
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -51,28 +54,71 @@ class wholePiano extends JPanel implements KeyListener, ActionListener {
     
     @Override
     public void actionPerformed(ActionEvent e) {
-    	long curTime = System.nanoTime();
-    	long duration = 0;
-    	double sf = 10000000000L;
-    	for(String st:pressedNotes){
-    		int oldVolume = noteVolume.get(st);
-    		long onset = noteOnset.get(st);
+    	counter++;
+    	Iterator<String> iter = notesToRemove.iterator();
+    	String st;
+    	while(iter.hasNext()){
+    		st = iter.next();
+    		pressedNotes.remove(st);
+    		iter.remove();
+    	}
     	
-    		int newVolume = calcNewVolume(oldVolume, curTime, onset);
-    		
-    		
-    		System.out.println("note: "+st+" old volume: "+oldVolume+" new volume: "+newVolume);
-    		noteVolume.put(st, newVolume);
-    		//System.out.println(st+" initial volume: "+noteVolume.get(st)+" duration:"+duration/1000+" fade factor:"+fade + " new volume:"+newVolume);
+    	iter = sustainedToRemove.iterator();
+    	while(iter.hasNext()){
+    		st = iter.next();
+    		sustainedNotes.remove(st);
+    		iter.remove();
     	}
-    	for(String st:sustainedNotes){
-    		int oldVolume = noteVolume.get(st);
-    		long onset = noteOnset.get(st);
-    		int newVolume = calcNewVolume(oldVolume, curTime, onset);
+    	
+    	iter = pressedNotes.iterator();
+    	while(iter.hasNext()){
+    		try{
+    			st = iter.next();
+    			
+    			//System.out.println(counter+" pressed "+st);
+        		int oldVolume = noteVolume.get(st);
+        		if(oldVolume==0){
+        			iter.remove();
+        		}else{
+        			int newVolume = calcNewVolume(oldVolume);
+            		noteVolume.put(st, newVolume);
+        		}
+    			
+    		}catch(Exception f){
+    			System.out.println("ERROR");
+    		}
     		
-    		noteVolume.put(st, newVolume);
-    		//System.out.println(st+" initial volume: "+noteVolume.get(st)+" duration:"+duration/1000+" fade factor:"+fade + " new volume:"+newVolume);
+    		//iter.remove();
     	}
+    	iter = sustainedNotes.iterator();
+    	while(iter.hasNext()){
+    		st = iter.next();
+    		//System.out.println(counter+" sustained "+st);
+    		int oldVolume = 0;
+    		try{
+    		oldVolume = noteVolume.get(st);
+    		}catch(Exception f){
+    			System.out.println("GET ERROR");
+    		}
+    		
+    		if(oldVolume==0){
+    			iter.remove();
+    		}else{
+    			int newVolume = calcNewVolume(oldVolume);
+    			noteVolume.put(st, newVolume);
+    		}
+    		
+    		
+    		//iter.remove();
+    	}
+//    	for(String st:sustainedNotes){
+//    		int oldVolume = noteVolume.get(st);
+//    		long onset = noteOnset.get(st);
+//    		int newVolume = calcNewVolume(oldVolume, curTime, onset);
+//    		
+//    		noteVolume.put(st, newVolume);
+//    		//System.out.println(st+" initial volume: "+noteVolume.get(st)+" duration:"+duration/1000+" fade factor:"+fade + " new volume:"+newVolume);
+//    	}
         repaint();
     }
     
@@ -83,18 +129,13 @@ class wholePiano extends JPanel implements KeyListener, ActionListener {
     	return locNumber;
     }
     
-    public int calcNewVolume(int oldVolume, long now, long onset){
-    	long duration;
-    	double sf = 0;
+    public int calcNewVolume(int oldVolume){
     	
-    	duration = now - onset;
-		double fade = (double) duration/sf;
-		System.out.println(fadeGradient);
 		int newVolume = (int) (oldVolume - (fadeGradient*refreshRate));
 		newVolume = Math.max(0, newVolume);
     	
     	
-    	return 0;
+    	return newVolume;
     }
     
     public void initialiseNoteCoords(){
@@ -118,21 +159,21 @@ class wholePiano extends JPanel implements KeyListener, ActionListener {
     			int y = 8-loc/11;
     			MyPair coords = new MyPair(x,y);
     			notesToCoord.put(octave[j]+i, coords);
-    			System.out.println(octave[j]+i+","+x+","+y+","+loc);
+    			//System.out.println(octave[j]+i+","+x+","+y+","+loc);
     		}
     	}
     	
     	
-    	System.out.println(notesToCoord.get("C0").key()+","+notesToCoord.get("C0").value());
+    	//System.out.println(notesToCoord.get("C0").key()+","+notesToCoord.get("C0").value());
     }
     
     public void setSustain(byte a, byte b) {
     	if(a==64) {
     		if(b==127) {
-    			System.out.println("Sustain On");
+    			//System.out.println("Sustain On");
     			sustain=true;
     		}else {
-    			System.out.println("Sustain Off");
+    			//System.out.println("Sustain Off");
     			sustain=false;
     			sustainedNotes.clear();
     			//repaint();
@@ -180,7 +221,7 @@ class wholePiano extends JPanel implements KeyListener, ActionListener {
     public void resetPianoColours(){
     	for(int i = 0; i<pianoColours.length; i++){
         	for(int j = 0; j<pianoColours[i].length; j++){
-        		pianoColours[i][j]=new Color(255,255,255);
+        		pianoColours[i][j]=backgroundColour;
         	}
         }
     }
@@ -194,7 +235,7 @@ class wholePiano extends JPanel implements KeyListener, ActionListener {
     }
     
     public void resetNoteColour(int x, int y){
-    	pianoColours[x][y]=new Color(255,255,255);
+    	pianoColours[x][y]=new Color(255,248,220);
     }
     
     public void setPianoColours(){
@@ -214,8 +255,6 @@ class wholePiano extends JPanel implements KeyListener, ActionListener {
     		x = notesToCoord.get(curInstance).key();
     		y = notesToCoord.get(curInstance).value();
     		pianoColours[x][y]=noteColours.get(curInstance.substring(0,curInstance.length()-1));
-    		System.out.println(curInstance);
-    		System.out.println(x+","+y);
       	}
     }
     
@@ -236,24 +275,27 @@ class wholePiano extends JPanel implements KeyListener, ActionListener {
 
     public void notePressed(String noteName, int vel){
     	pressedNotes.add(noteName);
+    	sustainedToRemove.add(noteName);
     	noteVolume.put(noteName, vel);
-    	noteOnset.put(noteName, System.nanoTime());
+    	
     	//repaint();
     }
     
     public void noteReleased(String noteName){
     	if(!sustain) {
-    		pressedNotes.remove(noteName);
-    		noteVolume.remove(noteName);
-    		noteOnset.remove(noteName, System.nanoTime());
+    		noteVolume.put(noteName,0);
+    	
     	}else {
-    		pressedNotes.remove(noteName);
+    		notesToRemove.add(noteName);
     		sustainedNotes.add(noteName);
     	}
     	//repaint();
     }
     public void paintComponent(Graphics g) {
         g.clearRect(0, 0, getWidth(), getHeight()); //clear before next press
+        
+        g.setColor(backgroundColour);
+        g.fillRect(0, 0, getWidth(), getHeight());
         setPianoColours();
         setPianoVolumes();
         int x = 0;
@@ -262,24 +304,27 @@ class wholePiano extends JPanel implements KeyListener, ActionListener {
         for(int i=0; i<11; i++){
         	y=0;
         	for(int j = 0; j<8; j++){
-        		Color color = new Color(0,0,0);
-        		
+        		Color color = new Color(255,248,220);
+        	
         		g.setColor(pianoColours[i][j]);
         		int volume = pianoVolumes[i][j];
         		float ratio = (float) Math.min((float)volume/(float)100,1.0);
         		int newHeight = Math.round(height*ratio);
-        		g.fillRect(x,y+((height-newHeight)/2),width,newHeight);
-        		g.setColor(color);
+     
+        		g.fillOval(x, y+((height-newHeight)/2),newHeight,newHeight);
+        		//g.fillRect(x,y+((height-newHeight)/2),width,newHeight);
+        		g.setColor(backgroundColour);
         		
         		//g.drawRect(x,y,x+width,height);
         		y+=height;
         	}
         	x+=width;
         }
-        g.setColor(Color.black);
+        g.setColor(new Color(132,112,255));
         for(MyPair hit : hitNotes){
-        	g.drawLine(hit.key()*width, hit.value()*height+(height/2), (hit.key()*width)+width, hit.value()*height+(height/2));
-        	
+        	//g.drawLine(hit.key()*width, hit.value()*height+(height/2), (hit.key()*width)+width, hit.value()*height+(height/2));
+        	//g.drawOval(hit.key()*width, hit.value()*height, width, height);
+        	g.fillRect(hit.key()*width, hit.value()*height+(height/2), width, 5);
         }
         
     }
@@ -297,9 +342,21 @@ class wholePiano extends JPanel implements KeyListener, ActionListener {
         	}
         	
             break;
+        case 's': 
+        	byte a = 64;
+        	byte b = 127;
+        	setSustain(a,b);
+        	
+            break;
+        case 'S': 
+        	byte c = 64;
+        	byte d = 0;
+        	setSustain(c,d);
+        	
+            break;
         case 'b': 
-        	if(pressedNotes.contains("B")){
-        		notePressed("B5",100);
+        	if(pressedNotes.contains("B5")){
+        		noteReleased("B5");
         	}else{
         		notePressed("B5",100);
         	}
@@ -314,11 +371,7 @@ class wholePiano extends JPanel implements KeyListener, ActionListener {
         	
             break;
         case 'e': 
-        	if(pressedNotes.contains("E")){
-        		pressedNotes.remove("E");
-        	}else{
-        		pressedNotes.add("E");
-        	}
+        	initialiseNoteColours("E");
         	
             break;
         case 'g': 

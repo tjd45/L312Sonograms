@@ -1,5 +1,6 @@
 package uk.ac.cam.tjd45.L312;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,16 +18,19 @@ public class ChordParserListener extends ParserListenerAdapter {
     	JFrame f = new JFrame();
     	
     	f.getContentPane().add(wp);
+    	
     	f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     	f.pack();
     	f.setVisible(true);
+    
+    	//f.setBackground(new Color(255,255,0));
     	
     	
     	
     }
     @Override public void onNotePressed(Note note) {
         notes.add(note);
-        System.out.println(note.toStringWithoutDuration());
+        //System.out.println(note.toStringWithoutDuration());
         String vel = note.getVelocityString();
         wp.notePressed(note.toStringWithoutDuration(),Integer.parseInt(vel.substring(1, vel.length())));
         
