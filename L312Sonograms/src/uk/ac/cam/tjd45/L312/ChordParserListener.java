@@ -30,7 +30,7 @@ public class ChordParserListener extends ParserListenerAdapter {
     }
     @Override public void onNotePressed(Note note) {
         notes.add(note);
-        //System.out.println(note.toStringWithoutDuration());
+        System.out.println(note.toStringWithoutDuration());
         String vel = note.getVelocityString();
         wp.notePressed(note.toStringWithoutDuration(),Integer.parseInt(vel.substring(1, vel.length())));
         

@@ -301,6 +301,10 @@ class wholePiano extends JPanel implements KeyListener, ActionListener {
         int x = 0;
         int y = 0;
         
+        Graphics2D g2 = (Graphics2D) g;
+        int loc1 =0;
+        int loc2 =0;
+        
         for(int i=0; i<11; i++){
         	y=0;
         	for(int j = 0; j<8; j++){
@@ -312,19 +316,31 @@ class wholePiano extends JPanel implements KeyListener, ActionListener {
         		int newHeight = Math.round(height*ratio);
      
         		g.fillOval(x, y+((height-newHeight)/2),newHeight,newHeight);
-        		//g.fillRect(x,y+((height-newHeight)/2),width,newHeight);
-        		g.setColor(backgroundColour);
-        		
+        	
         		//g.drawRect(x,y,x+width,height);
         		y+=height;
         	}
         	x+=width;
         }
-        g.setColor(new Color(132,112,255));
+        
+    
         for(MyPair hit : hitNotes){
         	//g.drawLine(hit.key()*width, hit.value()*height+(height/2), (hit.key()*width)+width, hit.value()*height+(height/2));
         	//g.drawOval(hit.key()*width, hit.value()*height, width, height);
-        	g.fillRect(hit.key()*width, hit.value()*height+(height/2), width, 5);
+        	int volume = pianoVolumes[hit.key()][hit.value()];
+        	float ratio = (float) Math.min((float)volume/(float)100,1.0);
+    		int newHeight = Math.round(height*ratio);
+    	
+    		
+            g.setColor(Color.white);
+    		g2.setStroke(new BasicStroke(1));
+    		
+    		g2.drawOval(hit.key()*width, hit.value()*height+((height-newHeight)/2),newHeight,newHeight);
+    		//g2.drawLine(loc1*width, loc2*height, hit.key()*width, hit.value()*height-newHeight);
+    		loc1 = hit.key();
+    		loc2 = hit.value();
+    		//g.setColor(new Color(132,112,255));
+        	//g.fillRect(hit.key()*width, hit.value()*height+(height/2), newHeight, 5);
         }
         
     }
@@ -363,24 +379,14 @@ class wholePiano extends JPanel implements KeyListener, ActionListener {
         	
             break;
         case 'c': 
-        	if(pressedNotes.contains("C5")){
-        		pressedNotes.remove("C5");
-        	}else{
-        		pressedNotes.add("C5");
-        	}
-        	
+        	initialiseNoteColours("C");
             break;
         case 'e': 
         	initialiseNoteColours("E");
         	
             break;
         case 'g': 
-        	if(pressedNotes.contains("G")){
-        		pressedNotes.remove("G");
-        	}else{
-        		pressedNotes.add("G");
-        	}
-        	
+        	initialiseNoteColours("G");
             break;
         case 'd': 
         	if(pressedNotes.contains("D")){
