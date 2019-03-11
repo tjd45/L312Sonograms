@@ -405,11 +405,19 @@ class wholePiano extends JPanel implements KeyListener, ActionListener {
         	
             break;
         case 'F': 
-        	if(pressedNotes.contains("F#")){
-        		pressedNotes.remove("F#");
-        	}else{
-        		pressedNotes.add("F#");
-        	}
+        	
+        	notePressed("G4",60);
+        	notePressed("B4",60);
+        	
+        	notePressed("C5",60);
+        	notePressed("E5",60);
+        	notePressed("A5",60);
+        	
+        	notePressed("A5",80);
+        	notePressed("C6",90);
+        	notePressed("D6",100);
+        	
+        	//notePressed("A5",100);
         	
             break;
         case 'C': 
