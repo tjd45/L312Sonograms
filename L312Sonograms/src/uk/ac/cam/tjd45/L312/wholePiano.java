@@ -39,6 +39,9 @@ class wholePiano extends JPanel implements KeyListener, ActionListener {
     private float fadeGradient = (float)100/(float)10000;
     private int counter = 0;
     Color backgroundColour = new Color(20,35,60);
+    boolean moreLines = false;
+    boolean moreMoreLines = false;
+    
     
     public wholePiano() {  //Constructor
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -170,10 +173,10 @@ class wholePiano extends JPanel implements KeyListener, ActionListener {
     public void setSustain(byte a, byte b) {
     	if(a==64) {
     		if(b==127) {
-    			//System.out.println("Sustain On");
+    			System.out.println("Sustain On");
     			sustain=true;
     		}else {
-    			//System.out.println("Sustain Off");
+    			System.out.println("Sustain Off");
     			sustain=false;
     			sustainedNotes.clear();
     			//repaint();
@@ -303,17 +306,25 @@ class wholePiano extends JPanel implements KeyListener, ActionListener {
         
         Graphics2D g2 = (Graphics2D) g;
         int loc1 =0;
-        int loc2 =0;
+        int loc2 =-1;
+        
+       
         
         for(int i=0; i<11; i++){
         	y=0;
         	for(int j = 0; j<8; j++){
         		Color color = new Color(255,248,220);
-        	
+        		
+        		
         		g.setColor(pianoColours[i][j]);
         		int volume = pianoVolumes[i][j];
         		float ratio = (float) Math.min((float)volume/(float)100,1.0);
         		int newHeight = Math.round(height*ratio);
+        		int stroke = Math.max(5, volume/5);
+        		g2.setStroke(new BasicStroke(stroke));
+        		if(moreLines){
+        		g2.drawLine(0, 0, i*width, (j*height)+((height-newHeight)/2));
+        		}
      
         		g.fillOval(x, y+((height-newHeight)/2),newHeight,newHeight);
         	
@@ -336,7 +347,12 @@ class wholePiano extends JPanel implements KeyListener, ActionListener {
     		g2.setStroke(new BasicStroke(1));
     		
     		g2.drawOval(hit.key()*width, hit.value()*height+((height-newHeight)/2),newHeight,newHeight);
-    		//g2.drawLine(loc1*width, loc2*height, hit.key()*width, hit.value()*height-newHeight);
+    		
+    		
+    		g2.setStroke(new BasicStroke(5));
+    		if(moreMoreLines){
+    		g2.drawLine(loc1*width, (loc2+1)*height, hit.key()*width, (hit.value()+1)*height);
+    		}
     		loc1 = hit.key();
     		loc2 = hit.value();
     		//g.setColor(new Color(132,112,255));
@@ -444,6 +460,21 @@ class wholePiano extends JPanel implements KeyListener, ActionListener {
         	}
         	
             break;
+        case 'l': 
+        	if(moreLines){
+        		moreLines=false;
+        	}else{
+        		moreLines=true;;
+        	}
+        	
+            break;
+        case 'L':
+        	if(moreMoreLines){
+        		moreMoreLines=false;
+        	}else{
+        		moreMoreLines=true;
+        	}
+        	break;
         case 'D': 
         	if(pressedNotes.contains("Eb")){
         		pressedNotes.remove("Eb");
