@@ -294,8 +294,8 @@ class wholePiano extends JPanel implements KeyListener, ActionListener {
     public void paintComponent(Graphics g) {
         g.clearRect(0, 0, getWidth(), getHeight()); //clear before next press
         
-        g.setColor(backgroundColour);
-        g.fillRect(0, 0, getWidth(), getHeight());
+        //g.setColor(backgroundColour);
+        //g.fillRect(0, 0, getWidth(), getHeight());
         setPianoColours();
         setPianoVolumes();
         int x = 0;
@@ -311,20 +311,20 @@ class wholePiano extends JPanel implements KeyListener, ActionListener {
         		float ratio = (float) Math.min((float)volume/(float)100,1.0);
         		int newHeight = Math.round(height*ratio);
      
-        		g.fillOval(x, y+((height-newHeight)/2),newHeight,newHeight);
-        		//g.fillRect(x,y+((height-newHeight)/2),width,newHeight);
-        		g.setColor(backgroundColour);
+        		//g.fillOval(x, y+((height-newHeight)/2),newHeight,newHeight);
+        		g.fillRect(x,y+((height-newHeight)/2),width,newHeight);
+        		g.setColor(Color.black);
         		
-        		//g.drawRect(x,y,x+width,height);
+        		g.drawRect(x,y,x+width,height);
         		y+=height;
         	}
         	x+=width;
         }
-        g.setColor(new Color(132,112,255));
+     //   g.setColor(new Color(132,112,255));
         for(MyPair hit : hitNotes){
-        	//g.drawLine(hit.key()*width, hit.value()*height+(height/2), (hit.key()*width)+width, hit.value()*height+(height/2));
+        	g.drawLine(hit.key()*width, hit.value()*height+(height/2), (hit.key()*width)+width, hit.value()*height+(height/2));
         	//g.drawOval(hit.key()*width, hit.value()*height, width, height);
-        	g.fillRect(hit.key()*width, hit.value()*height+(height/2), width, 5);
+        	//g.fillRect(hit.key()*width, hit.value()*height+(height/2), width, 5);
         }
         
     }
